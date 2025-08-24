@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.0/css/all.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet.awesome.rotate.min.css"/>
+    
+            <meta name="viewport" content="width=device-width,
+                initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+            <style>
+                #map_d754da2ad9a0fcc48a6577d545961691 {
+                    position: relative;
+                    width: 100.0%;
+                    height: 100.0%;
+                    left: 0.0%;
+                    top: 0.0%;
+                }
+                .leaflet-container { font-size: 1rem; }
+            </style>
+
+            <style>html, body {
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+            </style>
+
+            <style>#map {
+                position:absolute;
+                top:0;
+                bottom:0;
+                right:0;
+                left:0;
+                }
+            </style>
+
+            <script>
+                L_NO_TOUCH = false;
+                L_DISABLE_3D = false;
+            </script>
+
+        
+    <script src="https://cdn.jsdelivr.net/gh/python-visualization/folium@main/folium/templates/leaflet_heat.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.1.0/leaflet.markercluster.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.1.0/MarkerCluster.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.1.0/MarkerCluster.Default.css"/>
+</head>
+<body>
+    
+    
+            <div class="folium-map" id="map_d754da2ad9a0fcc48a6577d545961691" ></div>
+        
+</body>
+<script>
+    
+    
+            var map_d754da2ad9a0fcc48a6577d545961691 = L.map(
+                "map_d754da2ad9a0fcc48a6577d545961691",
+                {
+                    center: [-22.5056, -43.1779],
+                    crs: L.CRS.EPSG3857,
+                    ...{
+  "zoom": 13,
+  "zoomControl": true,
+  "preferCanvas": false,
+}
+
+                }
+            );
+
+            
+
+        
+    
+            var tile_layer_c9f76cbec3439ff76dcb75ab2a70802d = L.tileLayer(
+                "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
+                {
+  "minZoom": 0,
+  "maxZoom": 20,
+  "maxNativeZoom": 20,
+  "noWrap": false,
+  "attribution": "\u0026copy; \u003ca href=\"https://www.openstreetmap.org/copyright\"\u003eOpenStreetMap\u003c/a\u003e contributors \u0026copy; \u003ca href=\"https://carto.com/attributions\"\u003eCARTO\u003c/a\u003e",
+  "subdomains": "abcd",
+  "detectRetina": false,
+  "tms": false,
+  "opacity": 1,
+}
+
+            );
+        
+    
+            tile_layer_c9f76cbec3439ff76dcb75ab2a70802d.addTo(map_d754da2ad9a0fcc48a6577d545961691);
+        
+    
+            var heat_map_5359e601899713cf60f2e143c469896a = L.heatLayer(
+                [[-22.5056, -43.1779], [-22.505, -43.1765], [-22.507, -43.18], [-22.511, -43.1815], [-22.512, -43.1825], [-22.515, -43.185], [-22.5165, -43.1865], [-22.518, -43.188], [-22.52, -43.19], [-22.53, -43.2], [-22.532, -43.202], [-22.534, -43.204]],
+                {
+  "minOpacity": 0.5,
+  "maxZoom": 18,
+  "radius": 12,
+  "blur": 15,
+}
+            );
+        
+    
+            heat_map_5359e601899713cf60f2e143c469896a.addTo(map_d754da2ad9a0fcc48a6577d545961691);
+        
+    
+            var marker_cluster_1d2785e4705b1fe2428777bb69a045c4 = L.markerClusterGroup(
+                {
+}
+            );
+        
+    
+            var marker_2ed70f86b56819f94ac53f28960af104 = L.marker(
+                [-22.5056, -43.1779],
+                {
+}
+            ).addTo(marker_cluster_1d2785e4705b1fe2428777bb69a045c4);
+        
+    
+            var icon_edc4c27db653c0f74ad847e3077af9ae = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "car",
+  "prefix": "fa",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_27d58a7460826f0214873db334958a11 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_38941d56857c78e71040d29255735d0f = $(`<div id="html_38941d56857c78e71040d29255735d0f" style="width: 100.0%; height: 100.0%;">     <b>Local:</b> Centro<br>     <b>Data:</b> 2025-01-10<br>     </div>`)[0];
+                popup_27d58a7460826f0214873db334958a11.setContent(html_38941d56857c78e71040d29255735d0f);
+            
+        
+
+        marker_2ed70f86b56819f94ac53f28960af104.bindPopup(popup_27d58a7460826f0214873db334958a11)
+        ;
+
+        
+    
+    
+                marker_2ed70f86b56819f94ac53f28960af104.setIcon(icon_edc4c27db653c0f74ad847e3077af9ae);
+            
+    
+            var marker_66d7f6211331a0b7625c084e243ab258 = L.marker(
+                [-22.505, -43.1765],
+                {
+}
+            ).addTo(marker_cluster_1d2785e4705b1fe2428777bb69a045c4);
+        
+    
+            var icon_88e70ce6d52fb0b3a58d3af9a21398b5 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "car",
+  "prefix": "fa",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_427c9ddb95cb86289beb77e5976c62af = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_6d36f56a8cf6b72fd05c4838d5d54c12 = $(`<div id="html_6d36f56a8cf6b72fd05c4838d5d54c12" style="width: 100.0%; height: 100.0%;">     <b>Local:</b> Centro<br>     <b>Data:</b> 2025-01-10<br>     </div>`)[0];
+                popup_427c9ddb95cb86289beb77e5976c62af.setContent(html_6d36f56a8cf6b72fd05c4838d5d54c12);
+            
+        
+
+        marker_66d7f6211331a0b7625c084e243ab258.bindPopup(popup_427c9ddb95cb86289beb77e5976c62af)
+        ;
+
+        
+    
+    
+                marker_66d7f6211331a0b7625c084e243ab258.setIcon(icon_88e70ce6d52fb0b3a58d3af9a21398b5);
+            
+    
+            var marker_aad2b29e119efbfd40b23dd06293a240 = L.marker(
+                [-22.507, -43.18],
+                {
+}
+            ).addTo(marker_cluster_1d2785e4705b1fe2428777bb69a045c4);
+        
+    
+            var icon_6b030cbac5fd3e6695643a317ff93480 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "car",
+  "prefix": "fa",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_5d26b03b996cd7dd50e321dede0148ed = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_aab2006ac6593cc322246e3d59ea8106 = $(`<div id="html_aab2006ac6593cc322246e3d59ea8106" style="width: 100.0%; height: 100.0%;">     <b>Local:</b> Centro<br>     <b>Data:</b> 2025-01-11<br>     </div>`)[0];
+                popup_5d26b03b996cd7dd50e321dede0148ed.setContent(html_aab2006ac6593cc322246e3d59ea8106);
+            
+        
+
+        marker_aad2b29e119efbfd40b23dd06293a240.bindPopup(popup_5d26b03b996cd7dd50e321dede0148ed)
+        ;
+
+        
+    
+    
+                marker_aad2b29e119efbfd40b23dd06293a240.setIcon(icon_6b030cbac5fd3e6695643a317ff93480);
+            
+    
+            var marker_c06bbab064efec2180908b6811b130c5 = L.marker(
+                [-22.511, -43.1815],
+                {
+}
+            ).addTo(marker_cluster_1d2785e4705b1fe2428777bb69a045c4);
+        
+    
+            var icon_7e3fb80b40ae179bf7cc37f2b41c67ab = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "car",
+  "prefix": "fa",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_425dba099a95dfc86161291a8eb7cbf4 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_ffeb102e1179eb62b32d729d485b3770 = $(`<div id="html_ffeb102e1179eb62b32d729d485b3770" style="width: 100.0%; height: 100.0%;">     <b>Local:</b> Bingen<br>     <b>Data:</b> 2025-01-11<br>     </div>`)[0];
+                popup_425dba099a95dfc86161291a8eb7cbf4.setContent(html_ffeb102e1179eb62b32d729d485b3770);
+            
+        
+
+        marker_c06bbab064efec2180908b6811b130c5.bindPopup(popup_425dba099a95dfc86161291a8eb7cbf4)
+        ;
+
+        
+    
+    
+                marker_c06bbab064efec2180908b6811b130c5.setIcon(icon_7e3fb80b40ae179bf7cc37f2b41c67ab);
+            
+    
+            var marker_758b06c9e0030aa8e17dd1e4df275cc8 = L.marker(
+                [-22.512, -43.1825],
+                {
+}
+            ).addTo(marker_cluster_1d2785e4705b1fe2428777bb69a045c4);
+        
+    
+            var icon_754cbd3403d26b1b4eecc195c8e5f871 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "car",
+  "prefix": "fa",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_03fbeea1d093b1b107b2d4a3cb83c01b = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_dc6a0e4b953862001f35de79baca8e70 = $(`<div id="html_dc6a0e4b953862001f35de79baca8e70" style="width: 100.0%; height: 100.0%;">     <b>Local:</b> Bingen<br>     <b>Data:</b> 2025-01-12<br>     </div>`)[0];
+                popup_03fbeea1d093b1b107b2d4a3cb83c01b.setContent(html_dc6a0e4b953862001f35de79baca8e70);
+            
+        
+
+        marker_758b06c9e0030aa8e17dd1e4df275cc8.bindPopup(popup_03fbeea1d093b1b107b2d4a3cb83c01b)
+        ;
+
+        
+    
+    
+                marker_758b06c9e0030aa8e17dd1e4df275cc8.setIcon(icon_754cbd3403d26b1b4eecc195c8e5f871);
+            
+    
+            var marker_dae587f56ddc3664b8cf35ba2c127688 = L.marker(
+                [-22.515, -43.185],
+                {
+}
+            ).addTo(marker_cluster_1d2785e4705b1fe2428777bb69a045c4);
+        
+    
+            var icon_886a36d93bf8b37a74803a522d1ce015 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "car",
+  "prefix": "fa",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_3e8ea00a5d3a9ca5e2dbc999c38a635a = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_b6fc9a93c22c9085702d2dcb877d7eef = $(`<div id="html_b6fc9a93c22c9085702d2dcb877d7eef" style="width: 100.0%; height: 100.0%;">     <b>Local:</b> Quitandinha<br>     <b>Data:</b> 2025-01-12<br>     </div>`)[0];
+                popup_3e8ea00a5d3a9ca5e2dbc999c38a635a.setContent(html_b6fc9a93c22c9085702d2dcb877d7eef);
+            
+        
+
+        marker_dae587f56ddc3664b8cf35ba2c127688.bindPopup(popup_3e8ea00a5d3a9ca5e2dbc999c38a635a)
+        ;
+
+        
+    
+    
+                marker_dae587f56ddc3664b8cf35ba2c127688.setIcon(icon_886a36d93bf8b37a74803a522d1ce015);
+            
+    
+            var marker_bf663d3172163e5e1de9c1ba58663c1e = L.marker(
+                [-22.5165, -43.1865],
+                {
+}
+            ).addTo(marker_cluster_1d2785e4705b1fe2428777bb69a045c4);
+        
+    
+            var icon_06abafadd179927fb28494aff93258be = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "car",
+  "prefix": "fa",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_3e897a9639a4c5cb3519468317ababb0 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_1d728db63fd195cc8084c2a67bb71198 = $(`<div id="html_1d728db63fd195cc8084c2a67bb71198" style="width: 100.0%; height: 100.0%;">     <b>Local:</b> Quitandinha<br>     <b>Data:</b> 2025-01-13<br>     </div>`)[0];
+                popup_3e897a9639a4c5cb3519468317ababb0.setContent(html_1d728db63fd195cc8084c2a67bb71198);
+            
+        
+
+        marker_bf663d3172163e5e1de9c1ba58663c1e.bindPopup(popup_3e897a9639a4c5cb3519468317ababb0)
+        ;
+
+        
+    
+    
+                marker_bf663d3172163e5e1de9c1ba58663c1e.setIcon(icon_06abafadd179927fb28494aff93258be);
+            
+    
+            var marker_29e68dab902bbc72f1439d73d9e78467 = L.marker(
+                [-22.518, -43.188],
+                {
+}
+            ).addTo(marker_cluster_1d2785e4705b1fe2428777bb69a045c4);
+        
+    
+            var icon_5f640a90d9e81c948f404196cbf576a1 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "car",
+  "prefix": "fa",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_e8836b35c4d3f94ba6b95a6a908b4453 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_0d4d6cad7caa97259fd2822587218c32 = $(`<div id="html_0d4d6cad7caa97259fd2822587218c32" style="width: 100.0%; height: 100.0%;">     <b>Local:</b> Quitandinha<br>     <b>Data:</b> 2025-01-13<br>     </div>`)[0];
+                popup_e8836b35c4d3f94ba6b95a6a908b4453.setContent(html_0d4d6cad7caa97259fd2822587218c32);
+            
+        
+
+        marker_29e68dab902bbc72f1439d73d9e78467.bindPopup(popup_e8836b35c4d3f94ba6b95a6a908b4453)
+        ;
+
+        
+    
+    
+                marker_29e68dab902bbc72f1439d73d9e78467.setIcon(icon_5f640a90d9e81c948f404196cbf576a1);
+            
+    
+            var marker_0982808f99fb89564e63c49ef52ebe1c = L.marker(
+                [-22.52, -43.19],
+                {
+}
+            ).addTo(marker_cluster_1d2785e4705b1fe2428777bb69a045c4);
+        
+    
+            var icon_a7cb9371149a2aa669076433c5175172 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "car",
+  "prefix": "fa",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_cc296eca8ea0840ddacea3a88005a7c6 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_d7c8a60f7cd8e10a04f806a8f4071a03 = $(`<div id="html_d7c8a60f7cd8e10a04f806a8f4071a03" style="width: 100.0%; height: 100.0%;">     <b>Local:</b> Quitandinha<br>     <b>Data:</b> 2025-01-14<br>     </div>`)[0];
+                popup_cc296eca8ea0840ddacea3a88005a7c6.setContent(html_d7c8a60f7cd8e10a04f806a8f4071a03);
+            
+        
+
+        marker_0982808f99fb89564e63c49ef52ebe1c.bindPopup(popup_cc296eca8ea0840ddacea3a88005a7c6)
+        ;
+
+        
+    
+    
+                marker_0982808f99fb89564e63c49ef52ebe1c.setIcon(icon_a7cb9371149a2aa669076433c5175172);
+            
+    
+            var marker_360e9f30bba1d7a3b6f2d9258e8c3ae3 = L.marker(
+                [-22.53, -43.2],
+                {
+}
+            ).addTo(marker_cluster_1d2785e4705b1fe2428777bb69a045c4);
+        
+    
+            var icon_8ab1ab03430ac63c26fb865981c78e4c = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "car",
+  "prefix": "fa",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_dbc79751e6c73a2befe827ca04096e39 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_201cfe57dfbe7ef35dcc75c790de0c67 = $(`<div id="html_201cfe57dfbe7ef35dcc75c790de0c67" style="width: 100.0%; height: 100.0%;">     <b>Local:</b> Itaipava<br>     <b>Data:</b> 2025-01-14<br>     </div>`)[0];
+                popup_dbc79751e6c73a2befe827ca04096e39.setContent(html_201cfe57dfbe7ef35dcc75c790de0c67);
+            
+        
+
+        marker_360e9f30bba1d7a3b6f2d9258e8c3ae3.bindPopup(popup_dbc79751e6c73a2befe827ca04096e39)
+        ;
+
+        
+    
+    
+                marker_360e9f30bba1d7a3b6f2d9258e8c3ae3.setIcon(icon_8ab1ab03430ac63c26fb865981c78e4c);
+            
+    
+            var marker_b27ca84166f1bce0662873ae4c733230 = L.marker(
+                [-22.532, -43.202],
+                {
+}
+            ).addTo(marker_cluster_1d2785e4705b1fe2428777bb69a045c4);
+        
+    
+            var icon_923bc6f8adaa8a976a439408db58ce81 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "car",
+  "prefix": "fa",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_7397d18a2fbe3fc65ddef4c84eacd820 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_11974296c988480a50d24248c7bc54a6 = $(`<div id="html_11974296c988480a50d24248c7bc54a6" style="width: 100.0%; height: 100.0%;">     <b>Local:</b> Itaipava<br>     <b>Data:</b> 2025-01-15<br>     </div>`)[0];
+                popup_7397d18a2fbe3fc65ddef4c84eacd820.setContent(html_11974296c988480a50d24248c7bc54a6);
+            
+        
+
+        marker_b27ca84166f1bce0662873ae4c733230.bindPopup(popup_7397d18a2fbe3fc65ddef4c84eacd820)
+        ;
+
+        
+    
+    
+                marker_b27ca84166f1bce0662873ae4c733230.setIcon(icon_923bc6f8adaa8a976a439408db58ce81);
+            
+    
+            var marker_3962ca096ef3ddd298f82d0071b1cb36 = L.marker(
+                [-22.534, -43.204],
+                {
+}
+            ).addTo(marker_cluster_1d2785e4705b1fe2428777bb69a045c4);
+        
+    
+            var icon_ff50e279f44a26864d6047264d742fc8 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "car",
+  "prefix": "fa",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_cd559db06b067f0b75b9fbae7b756506 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_5632802800f8b909be9edac2595af321 = $(`<div id="html_5632802800f8b909be9edac2595af321" style="width: 100.0%; height: 100.0%;">     <b>Local:</b> Itaipava<br>     <b>Data:</b> 2025-01-15<br>     </div>`)[0];
+                popup_cd559db06b067f0b75b9fbae7b756506.setContent(html_5632802800f8b909be9edac2595af321);
+            
+        
+
+        marker_3962ca096ef3ddd298f82d0071b1cb36.bindPopup(popup_cd559db06b067f0b75b9fbae7b756506)
+        ;
+
+        
+    
+    
+                marker_3962ca096ef3ddd298f82d0071b1cb36.setIcon(icon_ff50e279f44a26864d6047264d742fc8);
+            
+    
+            marker_cluster_1d2785e4705b1fe2428777bb69a045c4.addTo(map_d754da2ad9a0fcc48a6577d545961691);
+        
+    
+            var marker_0e1e50b00f879c0dbbb6f1b7af4c1b54 = L.marker(
+                [-22.5056, -43.1779],
+                {
+}
+            ).addTo(map_d754da2ad9a0fcc48a6577d545961691);
+        
+    
+            var icon_6e106f64f5d0ac07f37c6ebc6130be60 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "red",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_1bb8067eb626f2ec7cb1fb87f3af3621 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_812911f33034e2c75aca6abc88fd30ae = $(`<div id="html_812911f33034e2c75aca6abc88fd30ae" style="width: 100.0%; height: 100.0%;"><b>Média de 2.00 acidentes por dia</b></div>`)[0];
+                popup_1bb8067eb626f2ec7cb1fb87f3af3621.setContent(html_812911f33034e2c75aca6abc88fd30ae);
+            
+        
+
+        marker_0e1e50b00f879c0dbbb6f1b7af4c1b54.bindPopup(popup_1bb8067eb626f2ec7cb1fb87f3af3621)
+        ;
+
+        
+    
+    
+                marker_0e1e50b00f879c0dbbb6f1b7af4c1b54.setIcon(icon_6e106f64f5d0ac07f37c6ebc6130be60);
+            
+    
+            var circle_marker_3ed5f568bab2ec9f0c3ab34496681d0c = L.circleMarker(
+                [-22.53, -43.2],
+                {"bubblingMouseEvents": true, "color": "red", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "red", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 8, "stroke": true, "weight": 3}
+            ).addTo(map_d754da2ad9a0fcc48a6577d545961691);
+        
+    
+        var popup_ebfee80e1dff4fcc03b6ee4e8de74192 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_c9c835668bddf5a20ffe8f907112fba5 = $(`<div id="html_c9c835668bddf5a20ffe8f907112fba5" style="width: 100.0%; height: 100.0%;">⚠ Itaipava - 2025-01-14</div>`)[0];
+                popup_ebfee80e1dff4fcc03b6ee4e8de74192.setContent(html_c9c835668bddf5a20ffe8f907112fba5);
+            
+        
+
+        circle_marker_3ed5f568bab2ec9f0c3ab34496681d0c.bindPopup(popup_ebfee80e1dff4fcc03b6ee4e8de74192)
+        ;
+
+        
+    
+    
+            var circle_marker_0f49785acfa8971244e8728902b40220 = L.circleMarker(
+                [-22.532, -43.202],
+                {"bubblingMouseEvents": true, "color": "red", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "red", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 8, "stroke": true, "weight": 3}
+            ).addTo(map_d754da2ad9a0fcc48a6577d545961691);
+        
+    
+        var popup_6879989cbb90976d1c46487dce4b388a = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_7d4df6d91863b0641de2cb6ba1909cc8 = $(`<div id="html_7d4df6d91863b0641de2cb6ba1909cc8" style="width: 100.0%; height: 100.0%;">⚠ Itaipava - 2025-01-15</div>`)[0];
+                popup_6879989cbb90976d1c46487dce4b388a.setContent(html_7d4df6d91863b0641de2cb6ba1909cc8);
+            
+        
+
+        circle_marker_0f49785acfa8971244e8728902b40220.bindPopup(popup_6879989cbb90976d1c46487dce4b388a)
+        ;
+
+        
+    
+    
+            var circle_marker_04a75666bcc82673860478001892def5 = L.circleMarker(
+                [-22.534, -43.204],
+                {"bubblingMouseEvents": true, "color": "red", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "red", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 8, "stroke": true, "weight": 3}
+            ).addTo(map_d754da2ad9a0fcc48a6577d545961691);
+        
+    
+        var popup_94891b561b21d24364863bd3fe205563 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_9d96fdab3af9f44ef25c83ccfee772a6 = $(`<div id="html_9d96fdab3af9f44ef25c83ccfee772a6" style="width: 100.0%; height: 100.0%;">⚠ Itaipava - 2025-01-15</div>`)[0];
+                popup_94891b561b21d24364863bd3fe205563.setContent(html_9d96fdab3af9f44ef25c83ccfee772a6);
+            
+        
+
+        circle_marker_04a75666bcc82673860478001892def5.bindPopup(popup_94891b561b21d24364863bd3fe205563)
+        ;
+
+        
+    
+</script>
+</html>
