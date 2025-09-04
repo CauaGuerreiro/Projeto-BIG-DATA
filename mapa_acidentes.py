@@ -49,7 +49,7 @@ def processar_acidentes():
         if "local" not in filtro.columns:
             messagebox.showerror("Erro", "Coluna 'local' não encontrada no arquivo.")
             return
-        filtro = filtro[filtro["local"].str.contains(bairro, case=False, na=False)]
+        filtro = filtro[filtro["municipio"].str.contains(bairro, case=False, na=False)]
 
     if filtro.empty:
         messagebox.showinfo("Resultado", "Nenhum dado encontrado com esses filtros.")
