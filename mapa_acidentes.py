@@ -1,28 +1,36 @@
 import pandas as pd
-import folium
-from folium.plugins import HeatMap
-import matplotlib.pyplot as plt
-import seaborn as sns
 import streamlit as st
-from streamlit_folium import st_folium
 import dateutil.parser
+import folium
+from folium.plugins import MarkerCluster
+from streamlit_folium import st_folium
+import plotly.express as px
 
 # === Configurações do Streamlit ===
 st.set_page_config(page_title="Traffic Pulse", layout="wide")
 st.title("🚦 Traffic Pulse: Dashboard de Acidentes em Petrópolis")
 
-# === 1. Carregar os dados ===
+# === 1. Carregar dados ===
 @st.cache_data
 def carregar_dados():
     df1 = pd.read_csv("acidentes_petropolis.csv")
     df2 = pd.read_csv("DETRAN PETROPOLIS 2025.csv")
     df3 = pd.read_csv("DETRAN PETROPOLIS 2024.csv")
     dados = pd.concat([df1, df2, df3], ignore_index=True)
-    
+
     # Normalizar colunas
     dados.columns = dados.columns.str.lower().str.strip()
-    
-    # Conversão de tipos
+
+    renomear = {
+        "sexo": "genero",
+        "sexo_condutor": "genero",
+        "sexo_vitima": "genero",
+        "veiculo": "tipo_veiculo",
+        "tipo de veiculo": "tipo_veiculo"
+    }
+    dados = dados.rename(columns={k:v for k,v in renomear.items() if k in dados.columns})
+
+    # Conversão de datas
     if "data_inversa" in dados.columns:
         def parse_data(x):
             try:
@@ -30,7 +38,8 @@ def carregar_dados():
             except:
                 return pd.NaT
         dados["data_inversa"] = dados["data_inversa"].apply(parse_data)
-    
+
+    # Conversão numérica
     for col in ["latitude", "longitude", "mortos", "feridos_leves", "feridos_graves"]:
         if col in dados.columns:
             dados[col] = pd.to_numeric(dados[col], errors="coerce")
@@ -39,13 +48,12 @@ def carregar_dados():
 
 dados = carregar_dados()
 
-# === 2. Filtros na sidebar ===
+# === 2. Filtros sidebar ===
 st.sidebar.header("Filtros")
-
 anos = ["Todos"] + sorted(dados["data_inversa"].dt.year.dropna().astype(int).unique().tolist())
 ano = st.sidebar.selectbox("Ano", anos)
 
-meses = ["Todos"] + list(range(1, 13))
+meses = ["Todos"] + list(range(1,13))
 mes = st.sidebar.selectbox("Mês", meses)
 
 bairros = ["Todos"] + sorted(dados["municipio"].dropna().unique())
@@ -54,8 +62,19 @@ bairro = st.sidebar.selectbox("Bairro/Local", bairros)
 tipos = ["Todos"] + sorted(dados["tipo_acidente"].dropna().unique())
 tipo_acidente = st.sidebar.selectbox("Tipo de Acidente", tipos)
 
-condicoes = ["Todos"] + sorted(dados["condicao_metereologica"].dropna().unique())
-condicao = st.sidebar.selectbox("Condição Meteorológica", condicoes)
+# Gênero
+if "genero" in dados.columns:
+    generos = ["Todos"] + sorted(dados["genero"].dropna().unique())
+    genero = st.sidebar.selectbox("Gênero", generos)
+else:
+    genero = "Todos"
+
+# Tipo veículo
+if "tipo_veiculo" in dados.columns:
+    veiculos = ["Todos"] + sorted(dados["tipo_veiculo"].dropna().unique())
+    tipo_veiculo = st.sidebar.selectbox("Tipo de Veículo", veiculos)
+else:
+    tipo_veiculo = "Todos"
 
 # Aplicar filtros
 filtro = dados.copy()
@@ -67,8 +86,10 @@ if bairro != "Todos":
     filtro = filtro[filtro["municipio"].str.contains(bairro, case=False, na=False)]
 if tipo_acidente != "Todos":
     filtro = filtro[filtro["tipo_acidente"].str.contains(tipo_acidente, case=False, na=False)]
-if condicao != "Todos":
-    filtro = filtro[filtro["condicao_metereologica"].str.contains(condicao, case=False, na=False)]
+if genero != "Todos" and "genero" in filtro.columns:
+    filtro = filtro[filtro["genero"].str.contains(genero, case=False, na=False)]
+if tipo_veiculo != "Todos" and "tipo_veiculo" in filtro.columns:
+    filtro = filtro[filtro["tipo_veiculo"].str.contains(tipo_veiculo, case=False, na=False)]
 
 if filtro.empty:
     st.warning("⚠ Nenhum dado encontrado com esses filtros.")
@@ -76,88 +97,111 @@ if filtro.empty:
 
 # === 3. Métricas principais ===
 total_acidentes = len(filtro)
-total_mortos = filtro["mortos"].sum()
-total_feridos_leves = filtro["feridos_leves"].sum()
-total_feridos_graves = filtro["feridos_graves"].sum()
+total_mortos = filtro["mortos"].sum() if "mortos" in filtro.columns else 0
+total_feridos_leves = filtro["feridos_leves"].sum() if "feridos_leves" in filtro.columns else 0
+total_feridos_graves = filtro["feridos_graves"].sum() if "feridos_graves" in filtro.columns else 0
 media_dia = filtro.groupby("data_inversa").size().mean()
 
 st.subheader("📊 Métricas Principais")
 col1, col2, col3, col4, col5 = st.columns(5)
 col1.metric("Acidentes", total_acidentes)
-col2.metric("Mortos", total_mortos)
-col3.metric("Feridos Leves", total_feridos_leves)
-col4.metric("Feridos Graves", total_feridos_graves)
-col5.metric("Média/Dia", round(media_dia, 2))
+col2.metric("Mortos", int(total_mortos))
+col3.metric("Feridos Leves", int(total_feridos_leves))
+col4.metric("Feridos Graves", int(total_feridos_graves))
+col5.metric("Média/Dia", round(media_dia,2))
 
-# === 4. Abas para gráficos e mapa ===
+# === 4. Abas ===
 tab1, tab2, tab3 = st.tabs(["📈 Gráficos", "🗺️ Mapa Interativo", "📅 Detalhes"])
 
-# --- Gráficos ---
+# --- Aba Gráficos ---
 with tab1:
-    st.subheader("Gráficos Analíticos")
-    col1, col2 = st.columns(2)
-
+    st.subheader("📊 Gráficos Interativos")
     # Top 10 locais
-    acidentes_por_local = filtro["municipio"].value_counts()
-    with col1:
-        if not acidentes_por_local.empty:
-            fig, ax = plt.subplots(figsize=(8,4))
-            sns.barplot(x=acidentes_por_local.index[:10], y=acidentes_por_local.values[:10], palette="Reds_r", ax=ax)
-            ax.set_xlabel("Local")
-            ax.set_ylabel("Nº de Acidentes")
-            ax.set_xticklabels(ax.get_xticklabels(), rotation=45, ha="right")
-            st.pyplot(fig)
-        else:
-            st.info("Sem dados para gráfico de locais.")
+    top_locais = filtro["municipio"].value_counts().nlargest(10)
+    fig_locais = px.bar(
+        top_locais[::-1],
+        orientation='h',
+        labels={'index':'Local','value':'Nº de Acidentes'},
+        title="Top 10 Locais com Mais Acidentes",
+        color=top_locais[::-1].values,
+        color_continuous_scale='Reds'
+    )
+    fig_locais.update_layout(showlegend=False)
+    st.plotly_chart(fig_locais, use_container_width=True)
 
     # Acidentes por dia
+    acidentes_dia = filtro.groupby("data_inversa").size()
+    fig_dia = px.line(
+        x=acidentes_dia.index,
+        y=acidentes_dia.values,
+        markers=True,
+        labels={'x':'Data','y':'Nº de Acidentes'},
+        title="Acidentes por Dia"
+    )
+    st.plotly_chart(fig_dia, use_container_width=True)
+
+    # Gráficos categóricos
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        if "tipo_acidente" in filtro.columns:
+            tipo_counts = filtro["tipo_acidente"].value_counts().nlargest(10)
+            fig_tipo = px.bar(tipo_counts[::-1], orientation='h',
+                              labels={'index':'Tipo','value':'Nº de Acidentes'},
+                              title="Tipos de Acidentes", color=tipo_counts[::-1].values,
+                              color_continuous_scale='Oranges')
+            fig_tipo.update_layout(showlegend=False)
+            st.plotly_chart(fig_tipo, use_container_width=True)
     with col2:
-        if not filtro.empty:
-            acidentes_por_data = filtro["data_inversa"].value_counts().sort_index()
-            fig, ax = plt.subplots(figsize=(8,4))
-            acidentes_por_data.plot(ax=ax)
-            ax.set_xlabel("Data")
-            ax.set_ylabel("Quantidade")
-            st.pyplot(fig)
+        if "genero" in filtro.columns:
+            genero_counts = filtro["genero"].value_counts()
+            fig_genero = px.bar(genero_counts[::-1], orientation='h',
+                                labels={'index':'Gênero','value':'Nº de Acidentes'},
+                                title="Distribuição por Gênero", color=genero_counts[::-1].values,
+                                color_continuous_scale='Purples')
+            fig_genero.update_layout(showlegend=False)
+            st.plotly_chart(fig_genero, use_container_width=True)
+    with col3:
+        if "tipo_veiculo" in filtro.columns:
+            veic_counts = filtro["tipo_veiculo"].value_counts().nlargest(10)
+            fig_veic = px.bar(veic_counts[::-1], orientation='h',
+                              labels={'index':'Veículo','value':'Nº de Acidentes'},
+                              title="Tipos de Veículo", color=veic_counts[::-1].values,
+                              color_continuous_scale='Greens')
+            fig_veic.update_layout(showlegend=False)
+            st.plotly_chart(fig_veic, use_container_width=True)
 
-    # Tipo de acidente
-    if "tipo_acidente" in filtro.columns:
-        st.subheader("Distribuição por Tipo de Acidente")
-        tipo_counts = filtro["tipo_acidente"].value_counts()
-        fig, ax = plt.subplots(figsize=(8,4))
-        sns.barplot(x=tipo_counts.index[:10], y=tipo_counts.values[:10], palette="Oranges_r", ax=ax)
-        ax.set_xticklabels(ax.get_xticklabels(), rotation=45, ha="right")
-        st.pyplot(fig)
-
-# --- Mapa interativo ---
+# --- Aba Mapa Interativo com Folium ---
 with tab2:
-    st.subheader("Mapa de Acidentes")
+    st.subheader("🗺️ Mapa de Acidentes (Folium)")
+
     if "latitude" in filtro.columns and "longitude" in filtro.columns:
         filtro_map = filtro.dropna(subset=["latitude", "longitude"])
         if not filtro_map.empty:
-            mapa = folium.Map(location=[-22.5056, -43.1779], zoom_start=13)
+            mapa = folium.Map(location=[-22.5056, -43.1779], zoom_start=12)
+            marker_cluster = MarkerCluster().add_to(mapa)
 
-            # Heatmap
-            heat_data = [[row["latitude"], row["longitude"]] for _, row in filtro_map.iterrows()]
-            if heat_data:
-                HeatMap(heat_data, radius=15).add_to(mapa)
-
-            # Marcadores coloridos
             for _, row in filtro_map.iterrows():
                 lat, lon = row["latitude"], row["longitude"]
                 cor = "blue"
-                if row.get("mortos", 0) > 0:
+                if pd.notna(row.get("mortos")) and row.get("mortos") > 0:
                     cor = "red"
-                elif row.get("feridos_graves", 0) > 0:
+                elif pd.notna(row.get("feridos_graves")) and row.get("feridos_graves") > 0:
                     cor = "orange"
 
+                mortos = int(row.get("mortos") if pd.notna(row.get("mortos")) else 0)
+                feridos_graves = int(row.get("feridos_graves") if pd.notna(row.get("feridos_graves")) else 0)
+                feridos_leves = int(row.get("feridos_leves") if pd.notna(row.get("feridos_leves")) else 0)
+
+                # Popup bonito e organizado
                 popup_text = f"""
-                <b>Local:</b> {row.get('municipio', 'N/D')}<br>
-                <b>Data:</b> {row.get('data_inversa', 'N/D')}<br>
-                <b>Tipo:</b> {row.get('tipo_acidente', 'N/D')}<br>
-                <b>Mortos:</b> {row.get('mortos', 0)}<br>
-                <b>Feridos Graves:</b> {row.get('feridos_graves', 0)}<br>
-                <b>Feridos Leves:</b> {row.get('feridos_leves', 0)}
+                <div style="font-family: Arial; font-size: 13px; line-height: 1.4;">
+                    <b style="color: #2F4F4F;">Local:</b> {row.get('municipio') if pd.notna(row.get('municipio')) else 'N/D'}<br>
+                    <b style="color: #2F4F4F;">Data:</b> {row.get('data_inversa').strftime('%d/%m/%Y') if pd.notna(row.get('data_inversa')) else 'N/D'}<br>
+                    <b style="color: #2F4F4F;">Tipo:</b> {row.get('tipo_acidente') if pd.notna(row.get('tipo_acidente')) else 'N/D'}<br>
+                    <b style="color: red;">Mortos:</b> {mortos}<br>
+                    <b style="color: orange;">Feridos Graves:</b> {feridos_graves}<br>
+                    <b style="color: green;">Feridos Leves:</b> {feridos_leves}
+                </div>
                 """
                 folium.CircleMarker(
                     location=[lat, lon],
@@ -166,15 +210,18 @@ with tab2:
                     fill=True,
                     fill_opacity=0.7,
                     popup=popup_text
-                ).add_to(mapa)
+                ).add_to(marker_cluster)
 
-            st_folium(mapa, width=700, height=500)
+            st_folium(mapa, width=900, height=550)
         else:
             st.info("⚠ Nenhum dado de latitude/longitude disponível.")
     else:
         st.info("⚠ Colunas de latitude/longitude ausentes nos dados.")
 
-# --- Tabela de detalhes ---
+# --- Aba Tabela ---
 with tab3:
-    st.subheader("Tabela de Detalhes")
+    st.subheader("📋 Tabela de Detalhes")
     st.dataframe(filtro.reset_index(drop=True))
+
+
+
