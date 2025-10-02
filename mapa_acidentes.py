@@ -13,14 +13,45 @@ st.title("🚦 Traffic Pulse: Dashboard de Acidentes em Petrópolis")
 # === 1. Carregar dados ===
 @st.cache_data
 def carregar_dados():
-    df1 = pd.read_csv("acidentes_petropolis.csv")
-    df2 = pd.read_csv("DETRAN PETROPOLIS 2025.csv")
-    df3 = pd.read_csv("DETRAN PETROPOLIS 2024.csv")
-    dados = pd.concat([df1, df2, df3], ignore_index=True)
+    # Lendo CSVs com encoding utf-8
+    df1 = pd.read_csv("acidentes_petropolis.csv", encoding="utf-8")
+    df2 = pd.read_csv("DETRAN PETROPOLIS 2025.csv", encoding="utf-8")
+    df3 = pd.read_csv("DETRAN PETROPOLIS 2024.csv", encoding="utf-8")
+    df4 = pd.read_csv(
+    "DETRAN PETROPOLIS 2023.csv", 
+    encoding="utf-8", 
+    sep=None, 
+    engine="python", 
+    on_bad_lines='skip'  # ignora linhas com problemas
+)
+    df5 = pd.read_csv(
+    "DETRAN PETROPOLIS 2022.csv", 
+    encoding="utf-8", 
+    sep=None, 
+    engine="python", 
+    on_bad_lines='skip'  # ignora linhas com problemas
+)
+    df6 = pd.read_csv(
+    "DETRAN PETROPOLIS 2021.csv", 
+    encoding="utf-8", 
+    sep=None, 
+    engine="python", 
+    on_bad_lines='skip'  # ignora linhas com problemas
+)
+    df7 = pd.read_csv(
+    "DETRAN PETROPOLIS 2020.csv", 
+    encoding="utf-8", 
+    sep=None, 
+    engine="python", 
+    on_bad_lines='skip'  # ignora linhas com problemas
+)
+    # Concatenando todos os dados
+    dados = pd.concat([df1, df2, df3, df4, df5, df6, df7], ignore_index=True)
 
     # Normalizar colunas
     dados.columns = dados.columns.str.lower().str.strip()
 
+    # Renomear colunas
     renomear = {
         "sexo": "genero",
         "sexo_condutor": "genero",
@@ -38,14 +69,18 @@ def carregar_dados():
             except:
                 return pd.NaT
         dados["data_inversa"] = dados["data_inversa"].apply(parse_data)
+    else:
+        dados["data_inversa"] = pd.NaT
 
-    # Conversão numérica
-    for col in ["latitude", "longitude", "mortos", "feridos_leves", "feridos_graves"]:
+    # Corrigir vírgulas em colunas numéricas
+    for col in ["latitude", "longitude", "mortos", "feridos_leves", "feridos_graves", "pessoas", "veiculos", "km"]:
         if col in dados.columns:
-            dados[col] = pd.to_numeric(dados[col], errors="coerce")
+            # Substitui vírgula por ponto e converte para numérico
+            dados[col] = pd.to_numeric(dados[col].astype(str).str.replace(",", "."), errors="coerce")
     
     return dados
 
+# Carregar dados
 dados = carregar_dados()
 
 # === 2. Filtros sidebar ===
