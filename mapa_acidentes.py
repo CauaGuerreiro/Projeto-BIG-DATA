@@ -146,7 +146,7 @@ col4.metric("Feridos Graves", int(total_feridos_graves))
 col5.metric("Média/Dia", round(media_dia,2))
 
 # === 4. Abas ===
-tab1, tab2, tab3 = st.tabs(["📈 Gráficos", "🗺️ Mapa Interativo", "📅 Detalhes"])
+tab1, tab2, tab3, tab4 = st.tabs(["📈 Gráficos", "🗺️ Mapa Interativo", "📅 Detalhes", "🚧 Prevenção e Análise"])
 
 # --- Aba Gráficos ---
 with tab1:
@@ -257,6 +257,125 @@ with tab2:
 with tab3:
     st.subheader("📋 Tabela de Detalhes")
     st.dataframe(filtro.reset_index(drop=True))
+    
+with tab4:
 
+    # --- Estatísticas Básicas ---
+    st.markdown("### 📌 Principais padrões observados no recorte filtrado")
 
+    # 1. Locais críticos
+    locais_criticos = filtro["municipio"].value_counts().head(3)
 
+    # 2. Tipos de acidentes
+    tipos_criticos = filtro["tipo_acidente"].value_counts().head(3) if "tipo_acidente" in filtro.columns else None
+
+    # ----------------------------
+    # 3. HORÁRIOS (CORRIGIDO)
+    # ----------------------------
+    if "horario" in filtro.columns:
+
+        # Tenta converter vários possíveis formatos
+        filtro["horario"] = pd.to_datetime(
+            filtro["horario"].astype(str).str.replace(".", ":", regex=False),
+            errors="coerce"
+        )
+
+        # Extrai apenas a HORA
+        filtro["hora"] = filtro["horario"].dt.hour
+
+        # Formata corretamente como 00:00
+        filtro["hora_formatada"] = filtro["hora"].apply(lambda x: f"{int(x):02d}:00" if pd.notnull(x) else None)
+
+        # Conta horas
+        horarios_criticos = filtro["hora_formatada"].value_counts().head(3)
+
+    else:
+        horarios_criticos = None
+
+    # 4. Veículos
+    veiculos_criticos = filtro["tipo_veiculo"].value_counts().head(3) if "tipo_veiculo" in filtro.columns else None
+
+    # 5. Gravidade
+    total_ferimentos = (filtro["feridos_leves"].sum() if "feridos_leves" in filtro.columns else 0) + \
+                       (filtro["feridos_graves"].sum() if "feridos_graves" in filtro.columns else 0)
+    total_m = filtro["mortos"].sum() if "mortos" in filtro.columns else 0
+
+    # --- Exibição ---
+    if not filtro.empty:
+        st.markdown("#### 🧭 Locais com maior incidência:")
+        st.write(locais_criticos)
+
+        if tipos_criticos is not None:
+            st.markdown("#### 🛑 Tipos de acidentes mais comuns:")
+            st.write(tipos_criticos)
+
+        if horarios_criticos is not None:
+            st.markdown("#### ⏰ Horários mais perigosos:")
+            st.write(horarios_criticos)
+
+        if veiculos_criticos is not None:
+            st.markdown("#### 🚗 Veículos mais envolvidos:")
+            st.write(veiculos_criticos)
+
+        st.markdown("#### ⚠️ Gravidade geral:")
+        st.write(f"- Feridos totais: {total_ferimentos}")
+        st.write(f"- Mortes totais: {total_m}")
+
+    # --- Recomendações Automáticas ---
+    st.markdown("---")
+    st.markdown("### 🛡 Recomendações de Prevenção Baseadas nos Dados")
+
+    recomendacoes = []
+
+    # 1. Locais críticos
+    for local, qtd in locais_criticos.items():
+        recomendacoes.append(
+            f"• **Reforçar sinalização e fiscalização no local '{local}'**, pois apresenta {qtd} acidentes no período analisado."
+        )
+
+    # 2. Horários perigosos — agora usando HORA FORMATADA
+    if horarios_criticos is not None:
+        for hora_fmt, qtd_h in horarios_criticos.items():
+            h_int = int(hora_fmt.split(":")[0])
+            recomendacoes.append(
+                f"• **Atenção redobrada entre {hora_fmt} e {h_int:02d}:59**, faixa com {qtd_h} registros de acidentes."
+            )
+
+ # 3. Tipo de acidente
+if tipos_criticos is not None:
+    for tipo, qtd in tipos_criticos.items():
+        tipo_lower = tipo.lower()
+
+        # =====================
+        # MEDIDAS ESPECÍFICAS
+        # =====================
+
+        if "saída de leito" in tipo_lower or "carroçável" in tipo_lower:
+            recomendacoes.append(
+                "• Saída de leito carroçável → Instalar defensas metálicas, melhorar iluminação, reforçar sinalização de curvas e revisar pavimento."
+            )
+
+        elif "colisão com objeto" in tipo_lower:
+            recomendacoes.append(
+                "• Colisão com objeto → Remover obstáculos próximos à pista, instalar amortecedores de impacto e melhorar refletividade da sinalização."
+            )
+
+        elif "tombamento" in tipo_lower:
+            recomendacoes.append(
+                "• Tombamento → Reforçar limites de velocidade em curvas, instalar placas de advertência para veículos pesados e melhorar aderência da via."
+            )
+
+        elif "colisão" in tipo_lower:
+            recomendacoes.append(
+                "• Colisões → Revisar limites de velocidade, reforçar faixas de pedestres e ampliar fiscalização."
+            )
+
+        # Recomendação geral
+        recomendacoes.append(
+            f"• '{tipo}' aparece com frequência ({qtd}). Implementar ações específicas de engenharia, fiscalização e educação no trânsito."
+        )
+
+# Exibir recomendações
+st.markdown("#### ✔ Ações Recomendadas:")
+for r in recomendacoes:
+    st.markdown(r)
